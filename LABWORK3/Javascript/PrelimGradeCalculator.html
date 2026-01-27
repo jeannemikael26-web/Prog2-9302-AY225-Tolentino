@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelim Grade Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 650px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .calculator-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .input-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="number"]::placeholder {
+            color: #bdc3c7;
+            font-size: 13px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+        }
+
+        .btn-calculate:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-clear {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .output-section {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid #ecf0f1;
+            min-height: 200px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        .output-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .output-title {
+            color: #2c3e50;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateX(5px);
+        }
+
+        .result-header {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .result-label {
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 25px 0;
+        }
+
+        .grade-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grade-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        .grade-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .grade-score {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .grade-message {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .grade-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .grade-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .emoji {
+            font-size: 24px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="calculator-icon">🎓</div>
+            <h1>Prelim Grade Calculator</h1>
+            <p>Calculate your required exam scores to achieve your target grade</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-grid">
+                <div class="input-group full-width">
+                    <label for="attendance">📅 Number of Attendances</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👥</span>
+                        <input type="number" id="attendance" placeholder="e.g., 18" min="0">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="lab1">📝 Lab Work 1 Grade</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">1️⃣</span>
+                        <input type="number" id="lab1" placeholder="0-100" min="0" max="100">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="lab2">📝 Lab Work 2 Grade</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">2️⃣</span>
+                        <input type="number" id="lab2" placeholder="0-100" min="0" max="100">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="lab3">📝 Lab Work 3 Grade</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">3️⃣</span>
+                        <input type="number" id="lab3" placeholder="0-100" min="0" max="100">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-calculate" onclick="calculateGrades()">
+                    <span style="position: relative; z-index: 1;">🚀 Calculate</span>
+                </button>
+                <button class="btn-clear" onclick="clearFields()">
+                    <span style="position: relative; z-index: 1;">🔄 Clear</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="output" class="output-section">
+            <div class="output-header">
+                <div class="output-title">
+                    <span>📊</span>
+                    <span>Your Results</span>
+                </div>
+            </div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateGrades() {
+            // Get input values
+            const attendance = parseFloat(document.getElementById('attendance').value);
+            const lab1 = parseFloat(document.getElementById('lab1').value);
+            const lab2 = parseFloat(document.getElementById('lab2').value);
+            const lab3 = parseFloat(document.getElementById('lab3').value);
+            
+            // Validate inputs
+            if (isNaN(attendance) || isNaN(lab1) || isNaN(lab2) || isNaN(lab3)) {
+                alert('⚠️ Please fill in all fields with valid numbers!');
+                return;
+            }
+            
+            if (lab1 < 0 || lab1 > 100 || lab2 < 0 || lab2 > 100 || lab3 < 0 || lab3 > 100) {
+                alert('⚠️ Lab grades must be between 0 and 100!');
+                return;
+            }
+            
+            if (attendance < 0) {
+                alert('⚠️ Attendance cannot be negative!');
+                return;
+            }
+            
+            // Calculate Lab Work Average
+            const labWorkAverage = (lab1 + lab2 + lab3) / 3;
+            
+            // Calculate Attendance Score (assuming max 20 classes)
+            let attendanceScore = (attendance / 20) * 100;
+            if (attendanceScore > 100) attendanceScore = 100;
+            
+            // Calculate Class Standing
+            const classStanding = (attendanceScore * 0.40) + (labWorkAverage * 0.60);
+            
+            // Calculate required Prelim Exam scores
+            const passingExamScore = calculateRequiredExam(75, classStanding);
+            const excellentExamScore = calculateRequiredExam(100, classStanding);
+            
+            // Display results
+            displayResults(attendance, attendanceScore, lab1, lab2, lab3, 
+                          labWorkAverage, classStanding, passingExamScore, excellentExamScore);
+        }
+        
+        function calculateRequiredExam(targetGrade, classStanding) {
+            // Prelim Grade = (Prelim Exam × 0.70) + (Class Standing × 0.30)
+            // Solve for Prelim Exam
+            return (targetGrade - (classStanding * 0.30)) / 0.70;
+        }
+        
+        function displayResults(attendance, attendanceScore, lab1, lab2, lab3,
+                               labWorkAverage, classStanding, passingExam, excellentExam) {
+            let output = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="emoji">📅</span>
+                        Attendance Information
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Number of Attendances:</span>
+                        <span class="result-value">${attendance.toFixed(0)}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Attendance Score:</span>
+                        <span class="result-value">${attendanceScore.toFixed(2)}%</span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="emoji">📝</span>
+                        Lab Work Grades
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Lab Work 1:</span>
+                        <span class="result-value">${lab1.toFixed(2)}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Lab Work 2:</span>
+                        <span class="result-value">${lab2.toFixed(2)}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Lab Work 3:</span>
+                        <span class="result-value">${lab3.toFixed(2)}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Lab Work Average:</span>
+                        <span class="result-value">${labWorkAverage.toFixed(2)}</span>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="emoji">📈</span>
+                        Class Standing
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Your Class Standing:</span>
+                        <span class="result-value">${classStanding.toFixed(2)}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #7f8c8d; margin-top: 8px;">
+                        (Attendance 40% + Lab Work Average 60%)
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+            `;
+            
+            // Passing Grade Card
+            let passingClass = 'grade-card';
+            let passingEmoji = '🎯';
+            let passingMessage = 'You need this exam score to pass the Prelim period.';
+            
+            if (passingExam > 100) {
+                passingClass += ' warning';
+                passingEmoji = '⚠️';
+                passingMessage = 'It is difficult to pass the Prelim period! The required score exceeds 100%.';
+            } else if (passingExam < 0) {
+                passingClass += ' success';
+                passingEmoji = '✅';
+                passingMessage = 'You will pass the Prelim period! Your Class Standing already ensures passing.';
+            }
+            
+            output += `
+                <div class="${passingClass}">
+                    <div class="grade-header">
+                        <span class="emoji">${passingEmoji}</span>
+                        To Pass (Prelim Grade = 75)
+                    </div>
+                    <div class="grade-score">${passingExam > 0 ? passingExam.toFixed(2) : '0.00'}</div>
+                    <div class="grade-message">${passingMessage}</div>
+                </div>
+            `;
+            
+            // Excellent Grade Card
+            let excellentClass = 'grade-card';
+            let excellentEmoji = '🏆';
+            let excellentMessage = 'You need this exam score for an Excellent grade.';
+            
+            if (excellentExam > 100) {
+                excellentClass += ' warning';
+                excellentEmoji = '⚠️';
+                excellentMessage = 'It is difficult to achieve an Excellent grade! The required score exceeds 100%.';
+            } else if (excellentExam < 0) {
+                excellentClass += ' success';
+                excellentEmoji = '🌟';
+                excellentMessage = 'You will achieve an Excellent grade! Your Class Standing already ensures it.';
+            }
+            
+            output += `
+                <div class="${excellentClass}">
+                    <div class="grade-header">
+                        <span class="emoji">${excellentEmoji}</span>
+                        For Excellent Grade (Prelim Grade = 100)
+                    </div>
+                    <div class="grade-score">${excellentExam > 0 ? excellentExam.toFixed(2) : '0.00'}</div>
+                    <div class="grade-message">${excellentMessage}</div>
+                </div>
+            `;
+            
+            document.getElementById('results').innerHTML = output;
+            document.getElementById('output').classList.add('show');
+            
+            // Smooth scroll to results
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function clearFields() {
+            document.getElementById('attendance').value = '';
+            document.getElementById('lab1').value = '';
+            document.getElementById('lab2').value = '';
+            document.getElementById('lab3').value = '';
+            document.getElementById('output').classList.remove('show');
+        }
+
+        // Add Enter key support
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateGrades();
+            }
+        });
+    </script>
+</body>
+</html>
